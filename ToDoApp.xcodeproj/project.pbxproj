@@ -12,6 +12,7 @@
 		21B95EDA29B2725500AF6C07 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95ED929B2725500AF6C07 /* ViewController.swift */; };
 		21B95EDF29B2725600AF6C07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21B95EDE29B2725600AF6C07 /* Assets.xcassets */; };
 		21B95EE229B2725600AF6C07 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21B95EE029B2725600AF6C07 /* LaunchScreen.storyboard */; };
+		21B95EEA29B28E0400AF6C07 /* ToDoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95EE929B28E0400AF6C07 /* ToDoCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		21B95EDE29B2725600AF6C07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21B95EE129B2725600AF6C07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		21B95EE329B2725600AF6C07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21B95EE929B28E0400AF6C07 /* ToDoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				21B95ED529B2725500AF6C07 /* AppDelegate.swift */,
 				21B95ED729B2725500AF6C07 /* SceneDelegate.swift */,
 				21B95ED929B2725500AF6C07 /* ViewController.swift */,
+				21B95EE929B28E0400AF6C07 /* ToDoCell.swift */,
 				21B95EDE29B2725600AF6C07 /* Assets.xcassets */,
 				21B95EE029B2725600AF6C07 /* LaunchScreen.storyboard */,
 				21B95EE329B2725600AF6C07 /* Info.plist */,
@@ -137,6 +140,7 @@
 				21B95EDA29B2725500AF6C07 /* ViewController.swift in Sources */,
 				21B95ED629B2725500AF6C07 /* AppDelegate.swift in Sources */,
 				21B95ED829B2725500AF6C07 /* SceneDelegate.swift in Sources */,
+				21B95EEA29B28E0400AF6C07 /* ToDoCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

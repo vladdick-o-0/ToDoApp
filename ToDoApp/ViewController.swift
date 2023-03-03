@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         table.backgroundColor = .systemGray5
         table.delegate = self
         table.dataSource = self
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        table.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.identifier)
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
@@ -25,6 +25,7 @@ class ViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupViews()
         setupConstraints()
     }
@@ -64,12 +65,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "\(indexPath)"
+        let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier, for: indexPath) as! ToDoCell
         
         return cell
     }
-    
+
     
 }
 
