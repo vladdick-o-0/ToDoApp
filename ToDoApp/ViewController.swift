@@ -18,22 +18,30 @@ class ViewController: UIViewController {
         table.delegate = self
         table.dataSource = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        setupViews()
+        setupConstraints()
     }
     
-    // MARK: - SetupUI
-    private func setupUI() {
+    // MARK: - setupViews
+    private func setupViews() {
         view.backgroundColor = .systemBackground
+        navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addButttonTapped))
         
-        //tableView
+        title = "To-Do"
+        
         view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    // MARK: - setupConstraints
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -42,17 +50,22 @@ class ViewController: UIViewController {
         ])
     }
     
+    @objc private func addButttonTapped() {
+        print("addButton tapped")
+    }
+                                                        
 }
 
 
 // MARK: - Extensions
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.textLabel?.text = "\(indexPath)"
         
         return cell
     }
