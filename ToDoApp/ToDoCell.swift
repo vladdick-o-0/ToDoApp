@@ -25,7 +25,8 @@ class ToDoCell: UITableViewCell {
 
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
-        label.text = "A"
+        label.text = "😂"
+        label.font = .systemFont(ofSize: 30)
         label.setContentHuggingPriority(UILayoutPriority(252), for: .horizontal)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -48,7 +49,7 @@ class ToDoCell: UITableViewCell {
         return label
     }()
     
-    private lazy var DateLabel: UILabel = {
+    private lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.text = "date"
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +72,7 @@ class ToDoCell: UITableViewCell {
     private func setupViews() {
         
         innerStackView.addArrangedSubview(taskLabel)
-        innerStackView.addArrangedSubview(DateLabel)
+        innerStackView.addArrangedSubview(dateLabel)
         
         mainStackView.addArrangedSubview(emojiLabel)
         mainStackView.addArrangedSubview(innerStackView)
@@ -88,5 +89,11 @@ class ToDoCell: UITableViewCell {
             mainStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             
         ])
+    }
+    
+    func setupCell(task: Task) {
+        emojiLabel.text = task.emoji
+        taskLabel.text = task.task
+        dateLabel.text = task.date
     }
 }

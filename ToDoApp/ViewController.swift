@@ -10,6 +10,7 @@ import UIKit
 class ViewController: UIViewController {
     
     // MARK: - Variables
+    private var tasks: [Task] = []
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -26,6 +27,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tasks = fetchData()
         setupViews()
         setupConstraints()
     }
@@ -33,7 +35,9 @@ class ViewController: UIViewController {
     // MARK: - setupViews
     private func setupViews() {
         view.backgroundColor = .systemBackground
-        navigationItem.leftBarButtonItem = editButtonItem
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editButttonTapped(_:)))
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addButttonTapped))
         
         title = "To-Do"
@@ -51,25 +55,63 @@ class ViewController: UIViewController {
         ])
     }
     
+    @objc private func editButttonTapped(_ sender: UIBarButtonItem) {
+        tableView.setEditing(!tableView.isEditing, animated: true)
+        sender.title = tableView.isEditing ? "Done" : "Edit"
+    }
+    
     @objc private func addButttonTapped() {
         print("addButton tapped")
     }
-                                                        
+    
 }
 
 
 // MARK: - Extensions
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return tasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier, for: indexPath) as! ToDoCell
         
+        let task = tasks[indexPath.row]
+        cell.setupCell(task: task)
+        
         return cell
     }
-
     
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedItem = tasks.remove(at: sourceIndexPath.row)
+        tasks.insert(movedItem, at: destinationIndexPath.row)
+        tableView.reloadData()
+    }
 }
 
+
+// the method to put all the tasks to array
+extension ViewController {
+    private func fetchData() -> [Task] {
+        return [
+            Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov"),
+            Task(emoji: "😛", task: "Clean my teeth", date: "today"),
+            Task(emoji: "😃", task: "Clean up my room", date: "4 dec"),
+        ]
+    }
+}
