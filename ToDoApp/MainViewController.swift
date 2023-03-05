@@ -7,10 +7,10 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+class MainViewController: UIViewController {
     
     // MARK: - Variables
-    private var tasks: [Task] = []
+    var tasks: [Task] = []
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -62,6 +62,7 @@ class HomeViewController: UIViewController {
     
     @objc private func addButttonTapped() {
         let viewController = AddViewController()
+        viewController.passDataBackDelegate = self
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .popover
         
@@ -72,7 +73,8 @@ class HomeViewController: UIViewController {
 
 
 // MARK: - Extensions
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tasks.count
     }
@@ -149,9 +151,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 //    }
 }
 
+extension MainViewController: PassDataBackDelegate {
+    func sendTask(task: Task) {
+        tasks.append(task)
+        tableView.reloadData()
+    }
+}
+
 
 // the method to put all the tasks to array
-extension HomeViewController {
+extension MainViewController {
     private func fetchData() -> [Task] {
         return [
             Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov", isPinned: false),

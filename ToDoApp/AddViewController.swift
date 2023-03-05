@@ -10,6 +10,12 @@ import UIKit
 class AddViewController: UIViewController {
     
     
+    // MARK: - Variables
+    var passDataBackDelegate: PassDataBackDelegate?
+    var currentTask = Task(emoji: "", task: "", date: "", isPinned: false)
+    
+    private var isAllFieldsFilled = false
+    
     // MARK: - UI Elements
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
@@ -25,6 +31,9 @@ class AddViewController: UIViewController {
         textField.backgroundColor = .white
         textField.borderStyle = .roundedRect
         textField.font = .systemFont(ofSize: 20)
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.delegate = self
+        textField.returnKeyType = .next
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -53,6 +62,9 @@ class AddViewController: UIViewController {
         textField.backgroundColor = .white
         textField.borderStyle = .roundedRect
         textField.font = .systemFont(ofSize: 20)
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.delegate = self
+        textField.returnKeyType = .next
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -81,6 +93,9 @@ class AddViewController: UIViewController {
         textField.backgroundColor = .white
         textField.borderStyle = .roundedRect
         textField.font = .systemFont(ofSize: 20)
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        textField.delegate = self
+        textField.returnKeyType = .done
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -105,10 +120,22 @@ class AddViewController: UIViewController {
         return stackView
     }()
     
+    private lazy var cancelButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButttonTapped(_:)))
+        return button
+    }()
+    
+    private lazy var saveButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButttonTapped))
+        button.isEnabled = false
+        return button
+    }()
+    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        hideKeyboardWhenTappedAround()
         
         setupViews()
         setupConstraints()
@@ -118,9 +145,9 @@ class AddViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .systemGray6
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButttonTapped(_:)))
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButttonTapped))
+        navigationItem.leftBarButtonItem = cancelButton
+        navigationItem.rightBarButtonItem = saveButton
+        navigationController?.navigationBar.backgroundColor = .systemBackground
         
         title = "Task"
         
@@ -165,14 +192,53 @@ class AddViewController: UIViewController {
     }
     
     @objc private func cancelButttonTapped(_ sender: UIBarButtonItem) {
-        print("cancel")
+        dismiss(animated: true)
     }
     
     @objc private func saveButttonTapped() {
-        print("save")
+        guard let emoji = emojiTextField.text else { return }
+        guard let task = taskTextField.text else { return }
+        guard let date = dateTextField.text else { return }
+        currentTask = Task(emoji: emoji, task: task, date: date, isPinned: false)
+        sendDataBack()
+    }
+    
+    @objc private func textFieldDidChange() {
+        checkAllFieldsFilled()
+    }
+    
+    private func checkAllFieldsFilled() {
+        let isEmojiTextFieldFilled = !emojiTextField.text!.isEmpty
+        let isTaskTextFieldFilled = !taskTextField.text!.isEmpty
+        let isDateTextFieldFilled = !dateTextField.text!.isEmpty
+        
+        isAllFieldsFilled = isEmojiTextFieldFilled && isTaskTextFieldFilled && isDateTextFieldFilled
+        
+        updateSaveButtonState()
+    }
+    
+    private func updateSaveButtonState() {
+        saveButton.isEnabled = isAllFieldsFilled
+    }
+    
+    func sendDataBack() {
+        passDataBackDelegate?.sendTask(task: currentTask)
+        dismiss(animated: true)
     }
 }
 
 
 // MARK: - Extensions
-
+extension AddViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField {
+        case emojiTextField:
+            taskTextField.becomeFirstResponder()
+        case taskTextField:
+            dateTextField.becomeFirstResponder()
+        default:
+            dateTextField.resignFirstResponder()
+        }
+        return true
+    }
+}
