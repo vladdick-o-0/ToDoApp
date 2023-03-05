@@ -102,6 +102,43 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tasks.insert(movedItem, at: destinationIndexPath.row)
         tableView.reloadData()
     }
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let doneAction = markTaskAsDone(at: indexPath)
+        let pinAction = markTaskAsPinned(at: indexPath)
+        
+        return UISwipeActionsConfiguration(actions: [doneAction, pinAction])
+    }
+    
+    func markTaskAsDone(at indexPath: IndexPath) -> UIContextualAction {
+        let action = UIContextualAction(style: .destructive, title: "Done") {
+            [weak self] (_, _, completionHandler) in
+            
+            self?.tasks.remove(at: indexPath.row)
+            self?.tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            completionHandler(true)
+        }
+        action.backgroundColor = .systemGreen
+        action.image = UIImage(systemName: "checkmark.circle")
+        
+        return action
+    }
+    
+    func markTaskAsPinned(at indexPath: IndexPath) -> UIContextualAction {
+        var task = tasks[indexPath.row]
+        let action = UIContextualAction(style: .normal, title: "Pin") {
+            [weak self] (_, _, completionHandler) in
+
+            task.isPinned = !task.isPinned
+            self?.tasks[indexPath.row] = task
+            completionHandler(true)
+        }
+        action.backgroundColor = .systemOrange
+        action.image = task.isPinned ? UIImage(systemName: "pin.slash") : UIImage(systemName: "pin")
+        return action
+    }
 }
 
 
@@ -109,9 +146,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 extension ViewController {
     private func fetchData() -> [Task] {
         return [
-            Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov"),
-            Task(emoji: "😛", task: "Clean my teeth", date: "today"),
-            Task(emoji: "😃", task: "Clean up my room", date: "4 dec"),
+            Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov", isPinned: false),
+            Task(emoji: "😛", task: "Clean my teeth", date: "today", isPinned: false),
+            Task(emoji: "😃", task: "Clean up my room", date: "4 dec", isPinned: false),
         ]
     }
 }

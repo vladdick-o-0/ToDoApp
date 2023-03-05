@@ -8,7 +8,8 @@
 import UIKit
 
 struct Task {
-    let emoji: String
-    let task: String
-    let date: String
+    var emoji: String
+    var task: String
+    var date: String
+    var isPinned: Bool
 }
