@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class HomeViewController: UIViewController {
     
     // MARK: - Variables
     private var tasks: [Task] = []
@@ -61,14 +61,18 @@ class ViewController: UIViewController {
     }
     
     @objc private func addButttonTapped() {
-        print("addButton tapped")
+        let viewController = AddViewController()
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .popover
+        
+        showDetailViewController(navigationController, sender: self)
     }
     
 }
 
 
 // MARK: - Extensions
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tasks.count
     }
@@ -139,11 +143,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         action.image = task.isPinned ? UIImage(systemName: "pin.slash") : UIImage(systemName: "pin")
         return action
     }
+    
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let cell = tableView.cellForRow(at: indexPath)
+//    }
 }
 
 
 // the method to put all the tasks to array
-extension ViewController {
+extension HomeViewController {
     private func fetchData() -> [Task] {
         return [
             Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov", isPinned: false),

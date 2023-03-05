@@ -9,23 +9,25 @@
 /* Begin PBXBuildFile section */
 		21B95ED629B2725500AF6C07 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95ED529B2725500AF6C07 /* AppDelegate.swift */; };
 		21B95ED829B2725500AF6C07 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95ED729B2725500AF6C07 /* SceneDelegate.swift */; };
-		21B95EDA29B2725500AF6C07 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95ED929B2725500AF6C07 /* ViewController.swift */; };
+		21B95EDA29B2725500AF6C07 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95ED929B2725500AF6C07 /* HomeViewController.swift */; };
 		21B95EDF29B2725600AF6C07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21B95EDE29B2725600AF6C07 /* Assets.xcassets */; };
 		21B95EE229B2725600AF6C07 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21B95EE029B2725600AF6C07 /* LaunchScreen.storyboard */; };
 		21B95EEA29B28E0400AF6C07 /* ToDoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95EE929B28E0400AF6C07 /* ToDoCell.swift */; };
 		21B95EEC29B29F6200AF6C07 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95EEB29B29F6200AF6C07 /* Task.swift */; };
+		21B95EEE29B4C88600AF6C07 /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B95EED29B4C88600AF6C07 /* AddViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		21B95ED229B2725500AF6C07 /* ToDoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21B95ED529B2725500AF6C07 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		21B95ED729B2725500AF6C07 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		21B95ED929B2725500AF6C07 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		21B95ED929B2725500AF6C07 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		21B95EDE29B2725600AF6C07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21B95EE129B2725600AF6C07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		21B95EE329B2725600AF6C07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21B95EE929B28E0400AF6C07 /* ToDoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoCell.swift; sourceTree = "<group>"; };
 		21B95EEB29B29F6200AF6C07 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		21B95EED29B4C88600AF6C07 /* AddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +62,8 @@
 			children = (
 				21B95ED529B2725500AF6C07 /* AppDelegate.swift */,
 				21B95ED729B2725500AF6C07 /* SceneDelegate.swift */,
-				21B95ED929B2725500AF6C07 /* ViewController.swift */,
+				21B95ED929B2725500AF6C07 /* HomeViewController.swift */,
+				21B95EED29B4C88600AF6C07 /* AddViewController.swift */,
 				21B95EEB29B29F6200AF6C07 /* Task.swift */,
 				21B95EE929B28E0400AF6C07 /* ToDoCell.swift */,
 				21B95EDE29B2725600AF6C07 /* Assets.xcassets */,
@@ -140,8 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21B95EDA29B2725500AF6C07 /* ViewController.swift in Sources */,
+				21B95EDA29B2725500AF6C07 /* HomeViewController.swift in Sources */,
 				21B95ED629B2725500AF6C07 /* AppDelegate.swift in Sources */,
+				21B95EEE29B4C88600AF6C07 /* AddViewController.swift in Sources */,
 				21B95EEC29B29F6200AF6C07 /* Task.swift in Sources */,
 				21B95ED829B2725500AF6C07 /* SceneDelegate.swift in Sources */,
 				21B95EEA29B28E0400AF6C07 /* ToDoCell.swift in Sources */,
