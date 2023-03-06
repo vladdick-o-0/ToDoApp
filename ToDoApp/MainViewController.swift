@@ -11,6 +11,7 @@ class MainViewController: UIViewController {
     
     // MARK: - Variables
     var tasks: [Task] = []
+    private var lastSelectedIndexPath: IndexPath?
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -21,6 +22,16 @@ class MainViewController: UIViewController {
         table.register(ToDoCell.self, forCellReuseIdentifier: ToDoCell.identifier)
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
+    }()
+    
+    private lazy var editButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editButttonTapped(_:)))
+        return button
+    }()
+    
+    private lazy var addButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addButttonTapped))
+        return button
     }()
     
     // MARK: - Lifecycle
@@ -36,9 +47,9 @@ class MainViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .systemBackground
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editButttonTapped(_:)))
+        navigationItem.leftBarButtonItem = editButton
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addButttonTapped))
+        navigationItem.rightBarButtonItem = addButton
         
         title = "To-Do"
         
@@ -61,7 +72,7 @@ class MainViewController: UIViewController {
     }
     
     @objc private func addButttonTapped() {
-        let viewController = AddViewController()
+        let viewController = AddViewController(currentTask: nil, isEditingExistingTask: false)
         viewController.passDataBackDelegate = self
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .popover
@@ -136,7 +147,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         var task = tasks[indexPath.row]
         let action = UIContextualAction(style: .normal, title: "Pin") {
             [weak self] (_, _, completionHandler) in
-
+            
             task.isPinned = !task.isPinned
             self?.tasks[indexPath.row] = task
             completionHandler(true)
@@ -146,14 +157,30 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return action
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let cell = tableView.cellForRow(at: indexPath)
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        lastSelectedIndexPath = tableView.indexPathForSelectedRow
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let selectedTask = tasks[indexPath.row]
+
+        let viewController = AddViewController(currentTask: selectedTask, isEditingExistingTask: true)
+        viewController.passDataBackDelegate = self
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .popover
+        
+        showDetailViewController(navigationController, sender: self)
+    }
 }
 
 extension MainViewController: PassDataBackDelegate {
-    func sendTask(task: Task) {
+    func sendNewTask(task: Task) {
         tasks.append(task)
+        tableView.reloadData()
+    }
+    func sendExistingTask(task: Task) {
+        if let selectedIndexPath = lastSelectedIndexPath {
+            tasks[selectedIndexPath.row] = task
+        }
         tableView.reloadData()
     }
 }

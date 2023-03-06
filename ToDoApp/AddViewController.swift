@@ -12,7 +12,8 @@ class AddViewController: UIViewController {
     
     // MARK: - Variables
     var passDataBackDelegate: PassDataBackDelegate?
-    var currentTask = Task(emoji: "", task: "", date: "", isPinned: false)
+    var currentTask: Task?
+    var isEditingExistingTask: Bool
     
     private var isAllFieldsFilled = false
     
@@ -141,6 +142,16 @@ class AddViewController: UIViewController {
         setupConstraints()
     }
     
+    init(currentTask: Task?, isEditingExistingTask: Bool) {
+        self.currentTask = currentTask
+        self.isEditingExistingTask = isEditingExistingTask
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - setupViews
     private func setupViews() {
         view.backgroundColor = .systemGray6
@@ -222,7 +233,11 @@ class AddViewController: UIViewController {
     }
     
     func sendDataBack() {
-        passDataBackDelegate?.sendTask(task: currentTask)
+        if isEditingExistingTask {
+            passDataBackDelegate?.sendExistingTask(task: currentTask!)
+        } else {
+            passDataBackDelegate?.sendNewTask(task: currentTask!)
+        }
         dismiss(animated: true)
     }
 }

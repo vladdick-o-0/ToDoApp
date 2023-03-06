@@ -8,5 +8,6 @@
 import UIKit
 
 protocol PassDataBackDelegate {
-    func sendTask(task: Task)
+    func sendNewTask(task: Task)
+    func sendExistingTask(task: Task)
 }
