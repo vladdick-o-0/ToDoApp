@@ -10,8 +10,9 @@ import UIKit
 class MainViewController: UIViewController {
     
     // MARK: - Variables
-    var tasks: [Task] = []
+    var tasks: [[Task]] = [[], [], []] // 0 is pinned, 1 is regular, 2 is done
     private var lastSelectedIndexPath: IndexPath?
+    
     
     // MARK: - UI Elements
     private lazy var tableView: UITableView = {
@@ -34,11 +35,12 @@ class MainViewController: UIViewController {
         return button
     }()
     
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tasks = fetchData()
+        tasks[1] = fetchData()
         setupViews()
         setupConstraints()
     }
@@ -86,14 +88,31 @@ class MainViewController: UIViewController {
 // MARK: - Extensions
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return tasks.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tasks[section].count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "Pinned"
+        case 1:
+            return "Regular"
+        case 2:
+            return "Done"
+        default:
+            fatalError("section is undefined")
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ToDoCell.identifier, for: indexPath) as! ToDoCell
         
-        let task = tasks[indexPath.row]
+        let task = tasks[indexPath.section][indexPath.row]
         cell.setupCell(task: task)
         
         return cell
@@ -111,12 +130,25 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return true
+        let allowedSection = indexPath.section
+        return indexPath.section == allowedSection
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let movedItem = tasks.remove(at: sourceIndexPath.row)
-        tasks.insert(movedItem, at: destinationIndexPath.row)
+        
+        let lastRowInSection = tableView.numberOfRows(inSection: sourceIndexPath.section)
+        // we do not subtract 1 because when we are trying to move the row to another section the number of rows in origin section becomes one less
+        let movedItem = tasks[sourceIndexPath.section].remove(at: sourceIndexPath.row)
+        
+        if sourceIndexPath.section < destinationIndexPath.section {
+            tasks[sourceIndexPath.section].insert(movedItem, at: lastRowInSection)
+        } else if sourceIndexPath.section > destinationIndexPath.section {
+            tasks[sourceIndexPath.section].insert(movedItem, at: 0)
+        } else {
+            tasks[sourceIndexPath.section].insert(movedItem, at: destinationIndexPath.row)
+            
+        }
+        
         tableView.reloadData()
     }
     
@@ -129,27 +161,52 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func markTaskAsDone(at indexPath: IndexPath) -> UIContextualAction {
+        var task = tasks[indexPath.section][indexPath.row]
         let action = UIContextualAction(style: .destructive, title: "Done") {
             [weak self] (_, _, completionHandler) in
             
-            self?.tasks.remove(at: indexPath.row)
-            self?.tableView.deleteRows(at: [indexPath], with: .fade)
+            var sectionToPut = 2
+            if !task.isDone {
+                sectionToPut = 2
+            } else {
+                sectionToPut = 1
+            }
+            self?.tasks[indexPath.section].remove(at: indexPath.row)
+            task.isDone = !task.isDone
+            self?.tasks[sectionToPut].append(task)
+            
+            self?.tableView.beginUpdates()
+            self?.tableView.deleteRows(at: [indexPath], with: .right)
+            self?.tableView.insertRows(at: [IndexPath(row: self!.tasks[sectionToPut].count - 1, section: sectionToPut)], with: .left)
+            self?.tableView.endUpdates()
             
             completionHandler(true)
         }
         action.backgroundColor = .systemGreen
-        action.image = UIImage(systemName: "checkmark.circle")
-        
+        action.image = task.isDone ? UIImage(systemName: "circle") : UIImage(systemName: "checkmark.circle")
         return action
     }
     
     func markTaskAsPinned(at indexPath: IndexPath) -> UIContextualAction {
-        var task = tasks[indexPath.row]
+        var task = tasks[indexPath.section][indexPath.row]
         let action = UIContextualAction(style: .normal, title: "Pin") {
             [weak self] (_, _, completionHandler) in
             
+            var sectionToPut = 0
+            if !task.isPinned {
+                sectionToPut = 0
+            } else {
+                sectionToPut = 1
+            }
+            self?.tasks[indexPath.section].remove(at: indexPath.row)
             task.isPinned = !task.isPinned
-            self?.tasks[indexPath.row] = task
+            self?.tasks[sectionToPut].append(task)
+            
+            self?.tableView.beginUpdates()
+            self?.tableView.deleteRows(at: [indexPath], with: .right)
+            self?.tableView.insertRows(at: [IndexPath(row: self!.tasks[sectionToPut].count - 1, section: sectionToPut)], with: .left)
+            self?.tableView.endUpdates()
+            
             completionHandler(true)
         }
         action.backgroundColor = .systemOrange
@@ -161,8 +218,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         lastSelectedIndexPath = tableView.indexPathForSelectedRow
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let selectedTask = tasks[indexPath.row]
-
+        let selectedTask = tasks[indexPath.section][indexPath.row]
+        
         let viewController = AddViewController(currentTask: selectedTask, isEditingExistingTask: true)
         viewController.passDataBackDelegate = self
         let navigationController = UINavigationController(rootViewController: viewController)
@@ -174,12 +231,12 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension MainViewController: PassDataBackDelegate {
     func sendNewTask(task: Task) {
-        tasks.append(task)
+        tasks[1].append(task)
         tableView.reloadData()
     }
     func sendExistingTask(task: Task) {
         if let selectedIndexPath = lastSelectedIndexPath {
-            tasks[selectedIndexPath.row] = task
+            tasks[selectedIndexPath.section][selectedIndexPath.row] = task
         }
         tableView.reloadData()
     }
@@ -190,9 +247,9 @@ extension MainViewController: PassDataBackDelegate {
 extension MainViewController {
     private func fetchData() -> [Task] {
         return [
-            Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov", isPinned: false),
-            Task(emoji: "😛", task: "Clean my teeth", date: "today", isPinned: false),
-            Task(emoji: "😃", task: "Clean up my room", date: "4 dec", isPinned: false),
+            Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov", isPinned: false, isDone: false),
+            Task(emoji: "😛", task: "Clean my teeth", date: "today", isPinned: false, isDone: false),
+            Task(emoji: "😃", task: "Clean up my room", date: "4 dec", isPinned: false, isDone: false),
         ]
     }
 }

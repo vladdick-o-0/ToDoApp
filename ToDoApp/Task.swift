@@ -12,4 +12,5 @@ struct Task {
     var task: String
     var date: String
     var isPinned: Bool
+    var isDone: Bool
 }

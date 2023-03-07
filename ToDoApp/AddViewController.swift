@@ -210,7 +210,7 @@ class AddViewController: UIViewController {
         guard let emoji = emojiTextField.text else { return }
         guard let task = taskTextField.text else { return }
         guard let date = dateTextField.text else { return }
-        currentTask = Task(emoji: emoji, task: task, date: date, isPinned: false)
+        currentTask = Task(emoji: emoji, task: task, date: date, isPinned: false, isDone: false)
         sendDataBack()
     }
     
