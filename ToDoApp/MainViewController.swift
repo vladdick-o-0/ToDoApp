@@ -119,14 +119,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            tasks.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
+        return .none
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -160,6 +153,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return UISwipeActionsConfiguration(actions: [doneAction, pinAction])
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = deleteTask(at: indexPath)
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
     func markTaskAsDone(at indexPath: IndexPath) -> UIContextualAction {
         var task = tasks[indexPath.section][indexPath.row]
         let action = UIContextualAction(style: .destructive, title: "Done") {
@@ -172,6 +172,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
                 sectionToPut = 1
             }
             self?.tasks[indexPath.section].remove(at: indexPath.row)
+            if task.isPinned { task.isPinned = false }
             task.isDone = !task.isDone
             self?.tasks[sectionToPut].append(task)
             
@@ -199,6 +200,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
                 sectionToPut = 1
             }
             self?.tasks[indexPath.section].remove(at: indexPath.row)
+            if task.isDone { task.isDone = false }
             task.isPinned = !task.isPinned
             self?.tasks[sectionToPut].append(task)
             
@@ -211,6 +213,23 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         }
         action.backgroundColor = .systemOrange
         action.image = task.isPinned ? UIImage(systemName: "pin.slash") : UIImage(systemName: "pin")
+        return action
+    }
+    
+    func deleteTask(at indexPath: IndexPath) -> UIContextualAction {
+        let action = UIContextualAction(style: .normal, title: "Delete") {
+            [weak self] (_, _, completionHandler) in
+            
+            self?.tasks[indexPath.section].remove(at: indexPath.row)
+            
+            self?.tableView.beginUpdates()
+            self?.tableView.deleteRows(at: [indexPath], with: .left)
+            self?.tableView.endUpdates()
+            
+            completionHandler(true)
+        }
+        action.backgroundColor = .systemRed
+        action.image = UIImage(systemName: "minus.circle")
         return action
     }
     
