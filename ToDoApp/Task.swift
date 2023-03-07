@@ -10,7 +10,7 @@ import UIKit
 struct Task {
     var emoji: String
     var task: String
-    var date: String
+    var date: Date
     var isPinned: Bool
     var isDone: Bool
 }

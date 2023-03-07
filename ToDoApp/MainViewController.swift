@@ -246,10 +246,26 @@ extension MainViewController: PassDataBackDelegate {
 // the method to put all the tasks to array
 extension MainViewController {
     private func fetchData() -> [Task] {
+        
+        let dateString1 = "2023-03-15T12:30:00.000Z"
+        let formatter1 = DateFormatter()
+        formatter1.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        let date1 = formatter1.date(from: dateString1)!
+        
+        let dateString2 = "2023-05-19T12:30:00.000Z"
+        let formatter2 = DateFormatter()
+        formatter2.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        let date2 = formatter2.date(from: dateString2)!
+        
+        let dateString3 = "2023-08-29T12:30:00.000Z"
+        let formatter3 = DateFormatter()
+        formatter3.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        let date3 = formatter3.date(from: dateString3)!
+        
         return [
-            Task(emoji: "😃", task: "Buy some vegetables", date: "22 nov", isPinned: false, isDone: false),
-            Task(emoji: "😛", task: "Clean my teeth", date: "today", isPinned: false, isDone: false),
-            Task(emoji: "😃", task: "Clean up my room", date: "4 dec", isPinned: false, isDone: false),
+            Task(emoji: "😃", task: "Buy some vegetables", date: date1, isPinned: false, isDone: false),
+            Task(emoji: "😛", task: "Clean my teeth", date: date2, isPinned: false, isDone: false),
+            Task(emoji: "🥸", task: "Clean up my room", date: date3, isPinned: false, isDone: false),
         ]
     }
 }

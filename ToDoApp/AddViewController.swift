@@ -88,17 +88,13 @@ class AddViewController: UIViewController {
         return label
     }()
     
-    private lazy var dateTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "22 nov"
-        textField.backgroundColor = .white
-        textField.borderStyle = .roundedRect
-        textField.font = .systemFont(ofSize: 20)
-        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        textField.delegate = self
-        textField.returnKeyType = .done
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.timeZone = .autoupdatingCurrent
+        datePicker.minimumDate = .now
+        return datePicker
     }()
     
     private lazy var dateStackView: UIStackView = {
@@ -115,7 +111,7 @@ class AddViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fill
         stackView.spacing = 30
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -146,6 +142,10 @@ class AddViewController: UIViewController {
         self.currentTask = currentTask
         self.isEditingExistingTask = isEditingExistingTask
         super.init(nibName: nil, bundle: nil)
+        if self.isEditingExistingTask {
+            fillAllFields()
+            checkAllFieldsFilled()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -170,7 +170,7 @@ class AddViewController: UIViewController {
         taskStackView.addArrangedSubview(taskTextField)
         
         dateStackView.addArrangedSubview(dateLabel)
-        dateStackView.addArrangedSubview(dateTextField)
+        dateStackView.addArrangedSubview(datePicker)
         
         mainStackView.addArrangedSubview(emojiStackView)
         mainStackView.addArrangedSubview(taskStackView)
@@ -198,7 +198,7 @@ class AddViewController: UIViewController {
             
             emojiTextField.widthAnchor.constraint(equalTo: emojiStackView.widthAnchor),
             taskTextField.widthAnchor.constraint(equalTo: emojiStackView.widthAnchor),
-            dateTextField.widthAnchor.constraint(equalTo: emojiStackView.widthAnchor),
+            datePicker.widthAnchor.constraint(equalTo: emojiStackView.widthAnchor),
         ])
     }
     
@@ -209,7 +209,7 @@ class AddViewController: UIViewController {
     @objc private func saveButttonTapped() {
         guard let emoji = emojiTextField.text else { return }
         guard let task = taskTextField.text else { return }
-        guard let date = dateTextField.text else { return }
+        let date = datePicker.date
         currentTask = Task(emoji: emoji, task: task, date: date, isPinned: false, isDone: false)
         sendDataBack()
     }
@@ -221,15 +221,20 @@ class AddViewController: UIViewController {
     private func checkAllFieldsFilled() {
         let isEmojiTextFieldFilled = !emojiTextField.text!.isEmpty
         let isTaskTextFieldFilled = !taskTextField.text!.isEmpty
-        let isDateTextFieldFilled = !dateTextField.text!.isEmpty
         
-        isAllFieldsFilled = isEmojiTextFieldFilled && isTaskTextFieldFilled && isDateTextFieldFilled
+        isAllFieldsFilled = isEmojiTextFieldFilled && isTaskTextFieldFilled
         
         updateSaveButtonState()
     }
     
     private func updateSaveButtonState() {
         saveButton.isEnabled = isAllFieldsFilled
+    }
+    
+    private func fillAllFields() {
+        emojiTextField.text = currentTask?.emoji
+        taskTextField.text = currentTask?.task
+        datePicker.date = currentTask!.date
     }
     
     func sendDataBack() {
@@ -250,9 +255,9 @@ extension AddViewController: UITextFieldDelegate {
         case emojiTextField:
             taskTextField.becomeFirstResponder()
         case taskTextField:
-            dateTextField.becomeFirstResponder()
+            datePicker.becomeFirstResponder()
         default:
-            dateTextField.resignFirstResponder()
+            datePicker.resignFirstResponder()
         }
         return true
     }

@@ -94,6 +94,12 @@ class ToDoCell: UITableViewCell {
     func setupCell(task: Task) {
         emojiLabel.text = task.emoji
         taskLabel.text = task.task
-        dateLabel.text = task.date
+        
+        let date = task.date
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd hh:mm a"
+        let dateString = formatter.string(from: date)
+        
+        dateLabel.text = dateString
     }
 }
